@@ -25,10 +25,9 @@ public class UserService {
     public List<User> getAllOnlineUsers(){
         return userRepository.findByStatusTrue();
     }
-    public User updateOnlineStatus(String username,User user) {
-        User user1 = getUserByUsername(username);
-        if(user1.isStatus()==true)
-            user1.setStatus(true);
+    public User updateOnlineStatus(Long id,Boolean status) {
+        User user1 = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        user1.setStatus(status);
         userRepository.save(user1);
         return user1;
     }
