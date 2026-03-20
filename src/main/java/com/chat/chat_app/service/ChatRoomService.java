@@ -30,4 +30,28 @@ public class ChatRoomService {
         }
         return chatRoom;
     }
+    public ChatRoom addMember(long chatRoomId,String username){
+        ChatRoom chatRoom=chatRoomRepository.getReferenceById(chatRoomId);
+        List<User> list=chatRoom.getMembers();
+        list.add(userRepository.findByUsername(username));
+         chatRoom.setMembers(list);
+         chatRoomRepository.save(chatRoom);
+        return chatRoom;
+    }
+    public ChatRoom leaveMember(long ChatRoomId,String username){
+        ChatRoom chatRoom=chatRoomRepository.getReferenceById(ChatRoomId);
+        List<User> list=chatRoom.getMembers();
+        list.remove(userRepository.findByUsername(username));
+        chatRoom.setMembers(list);
+        chatRoomRepository.save(chatRoom);
+        return chatRoom;
+    }
+    public List<ChatRoom> getChatRooms(){
+        return chatRoomRepository.findAll();
+    }
+    public ChatRoom getChatRoomById(long id){
+        return chatRoomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ChatRoom not found!"));
+    }
+
 }
