@@ -1,5 +1,6 @@
 package com.chat.chat_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,7 +18,9 @@ public class User {
     private String profilePicture;
     private boolean status;
     private Date lastSeen;
+    @JsonIgnore
     @ManyToMany(mappedBy = "members")
     private List<ChatRoom>chatRooms;
+
 
 }
