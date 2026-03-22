@@ -17,9 +17,11 @@ public class Message {
     private User sender;
     @ManyToOne
     @JoinColumn(name ="receiver_id")
+    @JsonIgnore
     private User receiver;
     @ManyToOne
     @JoinColumn(name ="Chat_room_id")
+    @JsonIgnore
     private ChatRoom chatRoom;
     private Date timeStamp;
     @JsonIgnore

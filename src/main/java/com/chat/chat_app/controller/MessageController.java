@@ -4,9 +4,11 @@ import com.chat.chat_app.entity.Message;
 import com.chat.chat_app.entity.User;
 import com.chat.chat_app.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.core.AbstractDestinationResolvingMessagingTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +21,21 @@ public class MessageController {
     @Autowired
     MessageService messageService;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     @MessageMapping("/chat/{id}")
-    @SendTo("/topic/chatroom/{id}")
-    public Message sendGroupMessage(@DestinationVariable Long id, Message message) {
-        return messageService.sendGroupMessage(message.getSender().getId(), id, message.getContent());
+    public void sendGroupMessage(@DestinationVariable Long id, Message message) {
+
+        Message saved = messageService.sendGroupMessage(
+                message.getSender().getId(),
+                id,
+                message.getContent()
+
+        );
+        System.out.println("Sending to topic: " + id);
+
+        messagingTemplate.convertAndSend("/topic/chatroom/" + id, saved);
     }
 
     @MessageMapping("/private/{receiverId}")

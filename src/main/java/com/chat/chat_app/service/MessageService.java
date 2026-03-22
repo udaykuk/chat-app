@@ -34,7 +34,10 @@ public class MessageService {
     public Message sendGroupMessage(long senderid,long chatroomId ,String content){
         Message message1=new Message();
         message1.setSender(userRepository.getReferenceById(senderid));
-        message1.setChatRoom(chatRoomRepository.getReferenceById(chatroomId));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatroomId)
+                .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+
+        message1.setChatRoom(chatRoom);
         message1.setContent(content);
         message1.setTimeStamp(new Date());
         messageRepository.save(message1);
